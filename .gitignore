@@ -1,0 +1,29 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Entornos virtuales de Python (por ejemplo, virtualenv, env, etc.)
+venv/
+env/
+
+# Archivos de configuración
+instance/
+
+# Archivos generados en tiempo de ejecución
+*.pyc
+*.pyo
+
+# Logs y archivos temporales
+*.log
+*.swp
+
+# Archivos de base de datos
+*.sqlite
+*.db
+
+# Otros directorios y archivos específicos de Flask
+__pycache__/
+migrations/
+error
+
+# Agrega cualquier otra exclusión necesaria para tu proyecto específico aquí
