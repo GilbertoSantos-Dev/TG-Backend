@@ -21,7 +21,7 @@ def create_usuario():
     db.session.add(novo_usuario)
     db.session.commit()
 
-    return jsonify(novo_usuario.to_dict()), 201
+    return jsonify(novo_usuario.to_dict(include_senha_hash=False)), 201
 
 @usuario_bp.route('/usuarios', methods=['GET'])
 def get_usuarios():
@@ -71,10 +71,10 @@ def change_password():
     if not user:
         return jsonify({'message': 'Usuário não encontrado'}), 404
 
-    if not bcrypt.check_password_hash(user.senha, current_password):
+    if not check_password_hash(user.senha_hash, current_password):
         return jsonify({'message': 'Senha atual incorreta'}), 401
 
-    user.senha = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    user.set_senha(new_password)
     db.session.commit()
     
     return jsonify({'message': 'Senha alterada com sucesso!'}), 200

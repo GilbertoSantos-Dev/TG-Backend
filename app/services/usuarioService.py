@@ -12,7 +12,7 @@ class UsuarioService:
             new_usuario.set_senha(data.get('senha'))
             db.session.add(new_usuario)
             db.session.commit()
-            return new_usuario.to_dict()
+            return new_usuario.to_dict(include_senha_hash=False)
         except Exception as e:
             print(f"Erro ao criar usuário: {e}")
             return None
@@ -31,22 +31,30 @@ class UsuarioService:
 
     @staticmethod
     def update_usuario(id, data):
-        usuario = Usuario.query.get(id)
-        if usuario:
+        try:
+            usuario = Usuario.query.get(id)
+            if not usuario:
+                return None
             usuario.nome = data.get('nome', usuario.nome)
             usuario.user_name = data.get('user_name', usuario.user_name)
-            if 'senha' in data:
-                usuario.set_senha(data.get('senha'))
             usuario.papel = data.get('papel', usuario.papel)
+            if 'senha' in data:
+                usuario.set_senha(data['senha'])
             db.session.commit()
-            return usuario.to_dict()
-        return None
+            return usuario.to_dict(include_senha_hash=False)
+        except Exception as e:
+            print(f"Erro ao atualizar usuário: {e}")
+            return None
 
     @staticmethod
     def delete_usuario(id):
-        usuario = Usuario.query.get(id)
-        if usuario:
+        try:
+            usuario = Usuario.query.get(id)
+            if not usuario:
+                return None
             db.session.delete(usuario)
             db.session.commit()
             return True
-        return False
+        except Exception as e:
+            print(f"Erro ao deletar usuário: {e}")
+            return None

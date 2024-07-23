@@ -1,6 +1,5 @@
 from app.models import Atividade, Usuario, db
 
-
 class AtividadeService:
     @staticmethod
     def create_atividade(data):

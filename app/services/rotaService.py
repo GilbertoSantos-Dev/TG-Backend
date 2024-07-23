@@ -18,16 +18,17 @@ class RotaService:
 
     @staticmethod
     def get_rota_by_id(rota_id):
+        print (rota_id)
         rota = Rota.query.get(rota_id)
         if rota:
-            return Rota.to_dict()
+            return rota.to_dict()
         return None
 
     @staticmethod
     def update_rota(rota_id, data):
         rota = Rota.query.get(rota_id)
         if rota:
-            Rota.descricao = data.get('descricao', rota.descricao)
+            rota.descricao = data.get('descricao', rota.descricao)
             db.session.commit()
             return rota.to_dict()
         return None

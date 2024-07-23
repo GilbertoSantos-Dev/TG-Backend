@@ -2,12 +2,8 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 usuario_atividade_association = db.Table('usuario_atividade_association',
-                                         db.Column('usuario_id', db.Integer, db.ForeignKey(
-                                             'usuario.id'), primary_key=True),
-                                         db.Column('atividade_id', db.Integer, db.ForeignKey(
-                                             'atividade.id'), primary_key=True)
-                                         )
-
+                                         db.Column('usuario_id', db.Integer, db.ForeignKey('usuario.id'), primary_key=True),
+                                         db.Column('atividade_id', db.Integer, db.ForeignKey('atividade.id'), primary_key=True))
 
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,8 +11,7 @@ class Usuario(db.Model):
     user_name = db.Column(db.String(50), nullable=False, unique=True)
     senha_hash = db.Column(db.String(256), nullable=False)
     papel = db.Column(db.String(20), nullable=False)
-    atividades = db.relationship(
-        'Atividade', secondary=usuario_atividade_association, back_populates='usuarios')
+    atividades = db.relationship('Atividade', secondary=usuario_atividade_association, back_populates='usuarios')
 
     def set_senha(self, senha):
         self.senha_hash = generate_password_hash(senha)
@@ -52,12 +47,10 @@ class Carro(db.Model):
             'km': self.km
         }
 
-
 class Rota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.String(50), nullable=False)
-    locais = db.relationship(
-        'Local', back_populates='rota', cascade='all, delete-orphan')
+    locais = db.relationship('Local', back_populates='rota', cascade='all, delete-orphan')
     atividades = db.relationship('Atividade', back_populates='rota')
 
     def to_dict(self):
@@ -65,7 +58,6 @@ class Rota(db.Model):
             'id': self.id,
             'descricao': self.descricao
         }
-
 
 class Local(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,7 +75,6 @@ class Local(db.Model):
             'rota': self.rota.to_dict() if self.rota else None
         }
 
-
 class Atividade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dist_percorrida = db.Column(db.Float, nullable=False)
@@ -99,8 +90,7 @@ class Atividade(db.Model):
     rota = db.relationship('Rota', back_populates='atividades')
     local = db.relationship('Local', back_populates='atividades')
     carro = db.relationship('Carro', back_populates='atividades')
-    usuarios = db.relationship(
-        'Usuario', secondary=usuario_atividade_association, back_populates='atividades')
+    usuarios = db.relationship('Usuario', secondary=usuario_atividade_association, back_populates='atividades')
 
     def calcular_distancia(self):
         return self.km_final - self.km_inicial
@@ -120,5 +110,5 @@ class Atividade(db.Model):
             'hora_inicio': self.hora_inicio,
             'hora_fim': self.hora_fim,
             'data': self.data,
-            'usuarios': [usuario.to_dict() for usuario in self.usuarios]
+            'usuarios': [usuario.to_dict(include_senha_hash=False) for usuario in self.usuarios]
         }
