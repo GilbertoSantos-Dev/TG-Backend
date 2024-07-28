@@ -112,3 +112,4 @@ class Atividade(db.Model):
             'data': self.data,
             'usuarios': [usuario.to_dict(include_senha_hash=False) for usuario in self.usuarios]
         }
+

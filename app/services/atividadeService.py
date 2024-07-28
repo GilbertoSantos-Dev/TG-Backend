@@ -42,18 +42,19 @@ class AtividadeService:
     def update_atividade(id, data):
         atividade = Atividade.query.get(id)
         if atividade:
-            atividade.dist_percorrida = data.get(
-                'dist_percorrida', atividade.dist_percorrida)
+            atividade.dist_percorrida = data.get('dist_percorrida', atividade.dist_percorrida)
             atividade.rota_id = data.get('rota_id', atividade.rota_id)
             atividade.local_id = data.get('local_id', atividade.local_id)
             atividade.carro_id = data.get('carro_id', atividade.carro_id)
-            atividade.km_informada = data.get(
-                'km_informada', atividade.km_informada)
+            atividade.km_inicial = data.get('km_inicial', atividade.km_inicial)
+            atividade.km_final = data.get('km_final', atividade.km_final)
+            atividade.hora_inicio = data.get('hora_inicio', atividade.hora_inicio)
+            atividade.hora_fim = data.get('hora_fim', atividade.hora_fim)
+            atividade.data = data.get('data', atividade.data)
 
             usuarios_ids = data.get('usuarios', [])
             if usuarios_ids:
-                usuarios = Usuario.query.filter(
-                    Usuario.id.in_(usuarios_ids)).all()
+                usuarios = Usuario.query.filter(Usuario.id.in_(usuarios_ids)).all()
                 atividade.usuarios = usuarios
 
             db.session.commit()
