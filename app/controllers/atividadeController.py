@@ -7,6 +7,7 @@ atividade_bp = Blueprint('atividade_bp', __name__)
 def create_atividade():
     data = request.get_json()  # Captura os dados da solicitação
     print("Dados recebidos:", data)
+    print("Cabeçalhos recebidos:", request.headers)
     new_atividade = AtividadeService.create_atividade(data)
     if new_atividade:
         return jsonify(new_atividade), 201

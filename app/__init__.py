@@ -6,10 +6,12 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
+jwt = JWTManager()
 
 def create_app():
     load_dotenv('.env')
@@ -17,10 +19,13 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']
 
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+    jwt.init_app(app)
 
     with app.app_context():
         from .models import Usuario, Carro, Rota, Local, Atividade
@@ -44,8 +49,5 @@ def create_app():
         handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
         handler.setLevel(logging.ERROR)
         app.logger.addHandler(handler)   
-
-#    for rule in app.url_map.iter_rules():
-#        print(f"Endpoint: {rule.endpoint}, URL: {rule}") 
 
     return app
