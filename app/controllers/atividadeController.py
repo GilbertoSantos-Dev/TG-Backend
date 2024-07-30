@@ -1,12 +1,17 @@
 from flask import Blueprint, request, jsonify
 from app.services.atividadeService import AtividadeService
-
+from datetime import datetime
 atividade_bp = Blueprint('atividade_bp', __name__)
 
 @atividade_bp.route('/atividades', methods=['POST'])
 def create_atividade():
     data = request.get_json()  # Captura os dados da solicitação
     print("Dados recebidos:", data)
+    data_hora_inicio_str = f"{data['data']} {data['hora_inicio']}"
+    data_hora_fim_str = f"{data['data']} {data['hora_fim']}"
+    data['hora_inicio'] = datetime.strptime(data_hora_inicio_str, '%d/%m/%Y %H:%M').timestamp()
+    data['hora_fim'] = datetime.strptime(data_hora_fim_str, '%d/%m/%Y %H:%M').timestamp()
+    data['dist_percorrida'] = int(data['km_final']) - int(data['km_inicial'])
     print("Cabeçalhos recebidos:", request.headers)
     new_atividade = AtividadeService.create_atividade(data)
     if new_atividade:
